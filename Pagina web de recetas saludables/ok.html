@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recetas Saludables - Kawaii Kitchen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#FFF8FB;
+      --card:#fff;
+      --accent:#FFB6C1; /* pastel pink */
+      --accent-2:#FFD9B6; /* pastel peach */
+      --muted:#9CA3AF;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 20px rgba(15,15,20,0.06);
+      --radius:18px;
+      --kawaii: "\2605"; /* decorative */
+    }
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#FFF);color:#333;min-height:100vh}
+
+    /* header */
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);}
+    .logo .cute{font-family:'Baloo 2',cursive;font-size:26px;color:#fff}
+    .title{font-family:'Baloo 2', cursive;font-size:18px}
+    nav{display:flex;gap:12px}
+    .btn{background:var(--card);border:none;padding:10px 14px;border-radius:12px;box-shadow:var(--shadow);cursor:pointer}
+
+    /* hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:18px;padding:22px;align-items:center}
+    .hero-card{background:var(--card);padding:22px;border-radius:22px;box-shadow:var(--shadow)}
+    .hero h1{font-family:'Baloo 2';margin:0 0 8px;font-size:28px}
+    .hero p{margin:0 0 18px;color:var(--muted)}
+    .search{display:flex;gap:8px}
+    .search input{flex:1;padding:12px;border-radius:12px;border:1px solid #f0e7ee}
+
+    /* filters */
+    .filters{display:flex;gap:8px;margin:12px 0}
+    .chip{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,#fff,#fff);border:1px dashed #f4d6df;cursor:pointer}
+    .chip.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 6px 16px rgba(255,160,180,0.14)}
+
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;padding:22px}
+    .card{background:var(--card);border-radius:18px;padding:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+    .thumb{height:140px;border-radius:12px;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .meta{display:flex;justify-content:space-between;align-items:center}
+    .badge{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:6px 10px;border-radius:999px;color:#fff;font-weight:600}
+    .card h3{margin:0;font-size:16px}
+    .card p{margin:0;color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:8px}
+    .primary{background:var(--accent);color:#fff;border:none;padding:8px 10px;border-radius:10px;cursor:pointer}
+    .ghost{background:transparent;border:1px solid #f0e0e5;padding:8px;border-radius:10px;cursor:pointer}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(10,10,12,0.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;display:none}
+    .modal{width:840px;max-width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.9), #fff);border-radius:20px;padding:18px;box-shadow:0 30px 80px rgba(15,15,20,0.35)}
+    .modal .modal-grid{display:grid;grid-template-columns:1fr 320px;gap:12px}
+    .close{background:#fff;border-radius:999px;border:1px solid #eee;padding:8px;cursor:pointer}
+
+    /* responsive */
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .modal .modal-grid{grid-template-columns:1fr}
+    }
+
+    /* cute floating icons */
+    .float-emoji{position:absolute;font-size:22px;opacity:0.9}
+    .footer{padding:20px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo"><div class="cute">K</div></div>
+      <div>
+        <div class="title">Kawaii Kitchen</div>
+        <div style="font-size:12px;color:var(--muted)">Recetas saludables y bonitas</div>
+      </div>
+    </div>
+    <nav>
+      <button class="btn">Inicio</button>
+      <button class="btn">Categorías</button>
+      <button class="btn">Mi cuenta</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <h1>Comidas sanas que te hacen sonreír 🍓</h1>
+        <p>Recetas fáciles, nutritivas y con un toque kawaii. Haz clic en una receta para ver detalles, pasos y fotos.</p>
+
+        <div class="search">
+          <input id="searchInput" placeholder="Busca: ensalada, smoothie, vegan..." />
+          <button class="btn" id="searchBtn">🔎</button>
+        </div>
+
+        <div class="filters" role="tablist" aria-label="Filtros">
+          <div class="chip active" data-filter="all">Todas</div>
+          <div class="chip" data-filter="quick">Rápidas</div>
+          <div class="chip" data-filter="vegan">Veganas</div>
+          <div class="chip" data-filter="lowcal">Bajas Calorías</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <button class="primary" id="randomBtn">Receta al azar</button>
+          <button class="ghost" id="viewGridBtn">Cambiar vista</button>
+        </div>
+      </div>
+
+      <div style="position:relative">
+        <div class="hero-card" style="text-align:center">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Receta destacada</div>
+          <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=60&auto=format&fit=crop" alt="Smoothie" style="width:100%;border-radius:12px;max-height:260px;object-fit:cover;display:block;margin-bottom:12px">
+          <h3 style="margin:6px 0">Smoothie Rosa Energético</h3>
+          <p style="margin:0;color:var(--muted)">Energía y vitaminas en 5 minutos.</p>
+          <div style="margin-top:12px">
+            <button class="primary" onclick="openModal('r1')">Ver receta</button>
+          </div>
+        </div>
+        <div class="float-emoji" style="top:-8px;right:20px">🍓</div>
+      </div>
+    </section>
+
+    <section class="grid" id="recipesGrid">
+      <!-- Recipe cards: copy/replace to add more -->
+
+      <article class="card" data-tags="quick,vegan" id="r1">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1512058564366-c9e3f10b263b?w=800&q=60&auto=format&fit=crop" alt="Bowl colorido"></div>
+        <div>
+          <div class="meta"><h3>Bowl Colorido</h3><div class="badge">15m</div></div>
+          <p>Bol de quinoa, verduras asadas y aderezo cítrico.</p>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="openModal('r1')">Ver</button>
+          <button class="ghost" onclick="saveFavorite('r1')">❤ Guardar</button>
+        </div>
+      </article>
+
+      <article class="card" data-tags="vegan,lowcal" id="r2">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=60&auto=format&fit=crop" alt="Ensalada"></div>
+        <div>
+          <div class="meta"><h3>Ensalada arcoíris</h3><div class="badge">10m</div></div>
+          <p>Color, fibra y crujiente — perfecta para el almuerzo.</p>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="openModal('r2')">Ver</button>
+          <button class="ghost" onclick="saveFavorite('r2')">❤ Guardar</button>
+        </div>
+      </article>
+
+      <article class="card" data-tags="quick,lowcal" id="r3">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1548731968-1a3c9f7d8f7f?w=800&q=60&auto=format&fit=crop" alt="Wrap"></div>
+        <div>
+          <div class="meta"><h3>Wrap de pollo ligero</h3><div class="badge">12m</div></div>
+          <p>Rico en proteína, fácil de llevar.</p>
+        </div>
+        <div class="actions">
+          <button class="primary" onclick="openModal('r3')">Ver</button>
+          <button class="ghost" onclick="saveFavorite('r3')">❤ Guardar</button>
+        </div>
+      </article>
+
+      <!-- add more cards as needed -->
+    </section>
+
+    <!-- modal (hidden by default) -->
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+      <div class="modal" role="document">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong id="modalTitle">Título receta</strong>
+          <button class="close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-grid">
+          <div>
+            <div style="border-radius:12px;overflow:hidden;height:260px;margin-bottom:12px"><img id="modalImg" src="" alt="" style="width:100%;height:100%;object-fit:cover"></div>
+            <h4>Ingredientes</h4>
+            <ul id="modalIngredients"></ul>
+            <h4>Pasos</h4>
+            <ol id="modalSteps"></ol>
+          </div>
+          <aside style="padding:12px;background:var(--glass);border-radius:12px">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Información</div>
+            <div id="modalInfo" style="font-weight:600;margin-bottom:12px">Tiempo • Dificultad • Porciones</div>
+            <div style="display:flex;gap:8px;flex-direction:column">
+              <button class="primary" id="startCookBtn">Empezar a cocinar</button>
+              <button class="ghost" id="shareBtn">Compartir</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">Diseñado con ♥ estilo kawaii - Kawaii Kitchen</footer>
+
+  <script>
+    // --- Datos de ejemplo (reemplaza o amplía con tus recetas) ---
+    const RECIPES = {
+      r1:{
+        id:'r1', title:'Bowl Colorido', img:'https://images.unsplash.com/photo-1512058564366-c9e3f10b263b?w=1200',
+        ingredients:['1 taza quinoa cocida','Verduras asadas','Aderezo de limón y tahini'],
+        steps:['Mezcla la quinoa con las verduras.','Añade el aderezo.','Sirve y decora con semillas.'],
+        info:'15m • Fácil • 2 porciones'
+      },
+      r2:{
+        id:'r2', title:'Ensalada arcoíris', img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200',
+        ingredients:['Lechuga','Tomate','Zanahoria rallada','Aguacate','Aderezo ligero'],
+        steps:['Corta y mezcla los ingredientes.','Añade el aderezo al gusto.'],
+        info:'10m • Fácil • 1-2 porciones'
+      },
+      r3:{
+        id:'r3', title:'Wrap de pollo ligero', img:'https://images.unsplash.com/photo-1548731968-1a3c9f7d8f7f?w=1200',
+        ingredients:['Tortilla integral','Pechuga de pollo cocida','Hojas verdes','Salsa yogur'],
+        steps:['Rellena la tortilla con los ingredientes.','Enrolla y sirve.'],
+        info:'12m • Fácil • 1 porción'
+      }
+    }
+
+    // UI elements
+    const modalBackdrop = document.getElementById('modalBackdrop')
+    const modalTitle = document.getElementById('modalTitle')
+    const modalImg = document.getElementById('modalImg')
+    const modalIngredients = document.getElementById('modalIngredients')
+    const modalSteps = document.getElementById('modalSteps')
+    const modalInfo = document.getElementById('modalInfo')
+
+    function openModal(id){
+      const r = RECIPES[id]
+      if(!r) return
+      modalTitle.textContent = r.title
+      modalImg.src = r.img
+      modalIngredients.innerHTML = r.ingredients.map(i => `<li>${i}</li>`).join('')
+      modalSteps.innerHTML = r.steps.map(s => `<li>${s}</li>`).join('')
+      modalInfo.textContent = r.info
+      modalBackdrop.style.display = 'flex'
+    }
+    function closeModal(){ modalBackdrop.style.display = 'none' }
+
+    // close modal on outside click
+    modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop) closeModal() })
+
+    // filters
+    document.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'))
+        chip.classList.add('active')
+        const filter = chip.dataset.filter
+        applyFilter(filter)
+      })
+    })
+
+    function applyFilter(filter){
+      const cards = document.querySelectorAll('#recipesGrid .card')
+      cards.forEach(card=>{
+        if(filter === 'all') card.style.display = ''
+        else{
+          const tags = card.dataset.tags.split(',')
+          card.style.display = tags.includes(filter) ? '' : 'none'
+        }
+      })
+    }
+
+    // random recipe
+    document.getElementById('randomBtn').addEventListener('click', ()=>{
+      const keys = Object.keys(RECIPES)
+      const rand = keys[Math.floor(Math.random()*keys.length)];
+      openModal(rand)
+    })
+
+    // search
+    document.getElementById('searchBtn').addEventListener('click', ()=>{
+      const q = document.getElementById('searchInput').value.trim().toLowerCase()
+      if(!q) return applyFilter('all')
+      document.querySelectorAll('#recipesGrid .card').forEach(card=>{
+        const text = (card.querySelector('h3').innerText + ' ' + card.querySelector('p').innerText).toLowerCase()
+        card.style.display = text.includes(q) ? '' : 'none'
+      })
+    })
+
+    // favorites (simple local storage example)
+    function saveFavorite(id){
+      let favs = JSON.parse(localStorage.getItem('kawaii_favs')||'[]')
+      if(!favs.includes(id)) favs.push(id)
+      localStorage.setItem('kawaii_favs', JSON.stringify(favs))
+      alert('Añadido a favoritos 💖')
+    }
+
+    // accessible keyboard: Esc to close
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal() })
+
+    // optional: visual polish toggles
+    document.getElementById('viewGridBtn').addEventListener('click', ()=>{
+      const grid = document.getElementById('recipesGrid')
+      grid.style.gridTemplateColumns = grid.style.gridTemplateColumns ? '' : 'repeat(auto-fill,minmax(320px,1fr))'
+    })
+
+    // inicial
+    applyFilter('all')
+  </script>
+
+</body>
+</html>
